@@ -1,94 +1,148 @@
 #include <iostream>
 
-using namespace std; 
+using namespace std;
 
+const size_t MAX_SIZE = 2;
 
+template <typename T>
 class Vector
 {
-
-private: 
-	int* arr; 
+private:
+	T *arr;
 	int size;
-	int capacity; 
+	int capacity;
+
+	void resize();
+	bool isEmpty() const;
+	bool isFull() const;
+
 public:
-	Vector(int len=2)
-	{
-		arr=new int[len]; 
-		size=0 ; 
-		capacity=len;
-	}
+	Vector(int len = MAX_SIZE);
+	~Vector();
 
-	int length()
-	{
-		return size;
-	}
-	void push(int val)
-	{
-		if(size==capacity)
-		{
-			resize(2*capacity);
-		}
-        arr[size++]=val;
-	}
-	void resize(int n)
-	{
-		int* data = new int[n]; 
-		for(int i=0;i<size;i++)
-			data[i]=arr[i];
-		delete[] arr; 
-		arr=data; 
-		capacity=n;
-
-	}
-
-	void remove(int index)
-	{
-		if(size!=0 && index <=size-1 )
-		{
-			for(int i=index+1;i<size;i++)
-			{
-				arr[i-1]=arr[i];
-			}
-			size--;
-		}
-
-	}
-
-	void display()
-	{
-		for(int i=0;i<size;i++)
-		{
-			cout<<arr[i]<<' '; 
-		}
-		cout<<'\n';
-	}
-
-	void insert(int index, int val)
-	{
-		if(size==capacity)
-		{
-			resize(2*capacity);
-		}
-		for(int i=size-1;i>=index;i--)
-			arr[i+1]=arr[i];
-		arr[index]=val;
-		size++; 
-
-	}
-	
-	
-	
+	int length() const;
+	void push(T val);
+	void remove(int index);
+	void pop_back();
+	void pop_front();
+	void display() const;
+	void insert(int index, T val);
 };
 
+// ====== Definitions ======
+
+template <typename T>
+Vector<T>::Vector(int len)
+{
+	if (len <= 0)
+	{
+		throw std::invalid_argument("Vector size must be positive");
+	}
+	arr = new T[len];
+	size = 0;
+	capacity = len;
+}
+
+template <typename T>
+Vector<T>::~Vector()
+{
+	delete[] arr;
+}
+
+template <typename T>
+void Vector<T>::resize()
+{
+	capacity = (capacity == 0) ? MAX_SIZE : capacity * 2;
+	T *data = new T[capacity];
+	for (int i = 0; i < size; i++)
+		data[i] = arr[i];
+	delete[] arr;
+	arr = data;
+}
+
+template <typename T>
+bool Vector<T>::isEmpty() const
+{
+	return size == 0;
+}
+
+template <typename T>
+bool Vector<T>::isFull() const
+{
+	return size == capacity;
+}
+
+template <typename T>
+int Vector<T>::length() const
+{
+	return size;
+}
+
+template <typename T>
+void Vector<T>::push(T val)
+{
+	if (size == capacity)
+		resize();
+	arr[size++] = val;
+}
+
+template <typename T>
+void Vector<T>::remove(int index)
+{
+	if (index >= size || index < 0)
+		return;
+
+	for (int i = index; i < size - 1; i++)
+	{
+		arr[i] = arr[i + 1];
+	}
+	size--;
+}
+
+template <typename T>
+void Vector<T>::pop_back()
+{
+	remove(size - 1);
+}
+
+template <typename T>
+void Vector<T>::pop_front()
+{
+	remove(0);
+}
+
+template <typename T>
+void Vector<T>::display() const
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << arr[i] << ' ';
+	}
+	cout << '\n';
+}
+
+template <typename T>
+void Vector<T>::insert(int index, T val)
+{
+	if (index > size || index < 0)
+		return;
+	if (size == capacity)
+		resize();
+	for (int i = size; i > index; i--)
+		arr[i] = arr[i - 1];
+	arr[index] = val;
+	size++;
+}
+
+// ====== Main ======
 
 int main()
 {
-	Vector vec=Vector(2); 
-	for(int i=0;i<100;i++)
+	Vector<int> vec{};
+	for (int i = 0; i < 100; i++)
 		vec.push(i);
 
-	vec.insert(0,1000);
-	vec.insert(20,3333);
+	vec.insert(0, 1000);
+	vec.insert(101, 1000);
 	vec.display();
-
 }
