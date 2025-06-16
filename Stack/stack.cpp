@@ -1,92 +1,56 @@
 #include <iostream>
+#include <vector>
+#include <stdexcept>
 
-using namespace std ; 
-
-const int Default = 10;  
-
+template <typename T>
 class Stack
 {
 private:
-	int *arr;
-	int size; 
-	int capacity; 
+	std::vector<T> data;
 
-public: 
-	Stack()
-	{
-		capacity=Default; // default 
-		size=0 ; 
-		arr=new int [capacity];
-	}
-	Stack(int len)
-	{
-		capacity= len ; 
-		size=0; 
-		arr=new int [capacity];
-	}
-
-	// destructor 
-	bool isEmpty()
-	{
-		return size==0; 
-	}
-	int length()
-	{
-		return size; 
-	}
-
-	void push(int data)
-	{
-		if(size<capacity)
-		{
-			arr[size++]=data;
-		}
-		else 
-		{
-			cout<<"stack overflow!\n";
-		}
-	}
-	int pop()
-	{
-		if(!isEmpty())
-		{
-			return arr[size--];
-		}
-		else 
-		{
-			cout<<"Stack is empty\n";
-			return -1;
-		}
-	}
-
-	// test if empty first 
-	int top()
-	{
-		if(!isEmpty())
-		{
-			return arr[size-1];		
-
-		}
-		else 
-		{
-			return -1; 
-		}
-	}
-
-
-
-	
+public:
+	void push(T val);
+	bool isEmpty() const;
+	T pop();
+	T top() const;
 };
+
+template <typename T>
+void Stack<T>::push(T val)
+{
+	data.push_back(val);
+}
+
+template <typename T>
+bool Stack<T>::isEmpty() const
+{
+	return data.empty();
+}
+
+template <typename T>
+T Stack<T>::pop()
+{
+	if (data.empty())
+		throw std::runtime_error("Stack underflow");
+	T val = data.back();
+	data.pop_back();
+	return val;
+}
+
+template <typename T>
+T Stack<T>::top() const
+{
+	if (isEmpty())
+		throw std::runtime_error("Stack empty");
+	return data.back();
+}
 
 int main()
 {
-	Stack myStack; 
-
-	for(int i=0;i<10;i++)
-	{
-		myStack.push(i);
-		cout<<myStack.top()<<"\n";
-	}
-	myStack.push(10);
-
+	Stack<int> stack;
+	for (int i = 0; i < 100; i++)
+		stack.push(i);
+	stack.pop();
+	int top = stack.top();
+	int isEmpty = stack.isEmpty();
 }
