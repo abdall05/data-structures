@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const size_t MAX_SIZE = 2;
+const size_t DEFAULT_SIZE = 2;
 
 template <typename T>
 class Vector
@@ -17,7 +17,7 @@ private:
 	bool isFull() const;
 
 public:
-	Vector(int len = MAX_SIZE);
+	Vector(int len = DEFAULT_SIZE);
 	~Vector();
 
 	int length() const;
@@ -52,7 +52,7 @@ Vector<T>::~Vector()
 template <typename T>
 void Vector<T>::resize()
 {
-	capacity = (capacity == 0) ? MAX_SIZE : capacity * 2;
+	capacity = (capacity == 0) ? DEFAULT_SIZE : capacity * 2;
 	T *data = new T[capacity];
 	for (int i = 0; i < size; i++)
 		data[i] = arr[i];
